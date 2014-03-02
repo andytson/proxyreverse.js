@@ -16,6 +16,10 @@ and type:
 
     $ npm install proxyreverse
 
+Create a SSL server key and certificate, for example a self-signed one:
+
+    $ openssl req -nodes -new -x509 -keyout server-key.pem -out server-cert.pem -days 360
+
 ## Usage
 
 Assuming that you are running your local web-server on a VM with a host-only
