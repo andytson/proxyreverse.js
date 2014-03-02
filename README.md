@@ -14,7 +14,7 @@ ProxyReverse is a tool that runs on the command line.
 On any system with [nodejs] and [npm] installed, open your terminal
 and type:
 
-    $ npm install proxyreverse
+    $ npm install -g proxyreverse
 
 Create a SSL server key and certificate, for example a self-signed one:
 
