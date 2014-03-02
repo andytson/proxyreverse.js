@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+
+var proxyReverse = require('../')
+  , HttpProxy = require('../lib/http-proxy').HttpProxy
+  , os = require('os')
+  , pkg = require('../package.json')
+  , version = pkg.version
+  , argumentParser = require('optimist')
+    .usage('Usage: proxyforward [options] PROTOCOL PORT')
+    .boolean('help')
+    .options('h', {
+      alias: 'help',
+      description: 'Show this message'
+    })
+    .boolean('insecure')
+    .options('k', {
+      alias: 'insecure',
+      description: 'Allows insecure SSL connections to the backend, bypassing rejected SSL certificates'
+    })
+    .boolean('spdy')
+    .options('spdy', {
+      alias: 'no-spdy',
+      default: false,
+      description: 'Turns on/off SPDY support and uses https protocol for all https connections'
+    })
+    .boolean('verbose')
+    .options('v', {
+      alias: 'verbose',
+      description: 'Run verbosely'
+    })
+    .boolean('version')
+    .options('version', {
+      description: 'Show version'
+    })
+  , options = argumentParser.argv;
+
+if (options.help || options._.length < 2) {
+  argumentParser.showHelp();
+  return;
+}
+
+if (options.version) {
+  console.log(version);
+  return;
+}
+
+var protocol = options._[0];
+options['frontend_host'] = os.hostname();
+options['frontend_port'] = options._[1];
+options['mode'] = 'forward';
+
+proxy = new HttpProxy(options);
+
+require('../lib/middleware/http').createHttp(proxy, options);
+if (!options['spdy']) {
+  require('../lib/middleware/https').createHttps(proxy, options);
+} else {
+  require('../lib/middleware/spdy').createSpdy(proxy, options);
+}
+
+require('../lib/middleware/header-url-rewrite')(proxy, options);
+require('../lib/middleware/x-forwarded')(proxy)
+
+var serverOptions = {
+  protocol: protocol,
+  host: options['frontend_host'],
+  port: options['frontend_port']
+};
+
+proxy.createServer(serverOptions);
+
+console.log(serverOptions.protocol + ' proxy is now available via: ' + serverOptions.protocol + '//' + serverOptions.host + ':' + serverOptions.port);

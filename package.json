@@ -1,0 +1,31 @@
+{
+  "name": "proxyreverse",
+  "description": "Reverse proxy your local web-server",
+  "version": "0.2.0",
+  "author": "Andy Thompson <me@andytson.com>",
+  "keywords": ["proxy"],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andytson/proxyreverse"
+  },
+  "homepage": "https://github.com/andytson/proxyreverse",
+  "bugs": "https://github.com/andytson/proxyreverse/issues",
+  "license": "MIT",
+
+  "dependencies": {
+    "optimist": "~ 0.3.5",
+    "regexp-quote": "0.0.0",
+    "spdy": "~ 1.19",
+    "tough-cookie": "0.12.1"
+  },
+
+  "main": "./lib/proxyreverse.js",
+  "bin": {
+    "proxyreverse": "./bin/proxyreverse",
+    "proxyforward": "./bin/proxyforward"
+  },
+
+  "engines": [
+    "node >= 0.10.0"
+  ]
+}

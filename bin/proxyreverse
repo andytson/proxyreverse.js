@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+
+var proxyReverse = require('../')
+  , HttpProxy = require('../lib/http-proxy').HttpProxy
+  , os = require('os')
+  , pkg = require('../package.json')
+  , version = pkg.version
+  , argumentParser = require('optimist')
+    .usage('Usage: proxyreverse [options] PORT BACKEND')
+    .boolean('help')
+    .options('h', {
+      alias: 'help',
+      description: 'Show this message'
+    })
+    .boolean('insecure')
+    .options('k', {
+      alias: 'insecure',
+      description: 'Allows insecure SSL connections to the backend, bypassing rejected SSL certificates'
+    })
+    .option('rewrite-domain', {
+      description: 'Rewrite domain pattern'
+    })
+    .boolean('rewrite-subdomains')
+    .options('s', {
+      alias: 'rewrite-subdomains',
+      description: 'Rewrite all subdomains'
+    })
+    .boolean('spdy')
+    .options('spdy', {
+      alias: 'no-spdy',
+      default: false,
+      description: 'Turns on/off SPDY support and uses https protocol for all https connections'
+    })
+    .boolean('verbose')
+    .options('v', {
+      alias: 'verbose',
+      description: 'Run verbosely'
+    })
+    .boolean('version')
+    .options('version', {
+      description: 'Show version'
+    })
+  , options = argumentParser.argv;
+
+if (options.help || options._.length < 2) {
+  argumentParser.showHelp();
+  return;
+}
+
+if (options.version) {
+  console.log(version);
+  return;
+}
+
+options['frontend_host'] = os.hostname();
+options['frontend_ports'] = options._[0].toString().split(',');
+options['backend_host'] = options._[1];
+options['mode'] = 'reverse';
+
+if (options['backend_host'].match(/^\d+$/)) {
+  options['backend_port'] = options['backend_host'];
+  options['backend_host'] = '127.0.0.1';
+} else if ((match = options['backend_host'].match(/^([^:]+)(?::(\d+))?/))) {
+  options['backend_host'] = match[1];
+  if (match[2] === undefined) {
+    options['backend_port'] = '80';
+  } else {
+    options['backend_port'] = match[2];
+  }
+}
+
+proxy = new HttpProxy(options);
+
+require('../lib/middleware/http').createHttp(proxy, options);
+if (!options['spdy']) {
+  require('../lib/middleware/https').createHttps(proxy, options);
+} else {
+  require('../lib/middleware/spdy').createSpdy(proxy, options);
+}
+
+require('../lib/middleware/header-url-rewrite')(proxy, options);
+require('../lib/middleware/cookie-domain-rewrite')(proxy, options);
+require('../lib/middleware/body-url-rewrite')(proxy, options);
+
+require('../lib/middleware/x-forwarded')(proxy)
+
+for (var i in options['frontend_ports']) {
+  var serverOptions = {
+    protocol: i > 0 ? 'https:' : 'http:',
+    port: options['frontend_ports'][i],
+    host: options['frontend_host'],
+    backend_protocol: i > 0 ? 'https:' : 'http:',
+    backend_host: options['backend_host']
+  };
+  proxy.createServer(serverOptions);
+
+  console.log(serverOptions.backend_protocol + '//' + serverOptions.backend_host + ' is now available via: ' + serverOptions.protocol + '//' + serverOptions.host + ':' + serverOptions.port);
+}
