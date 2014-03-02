@@ -35,15 +35,16 @@ be proxied to your my.dev serer.
 If your domain uses sub-domains for assets, proxyreverse can be told to rewrite
 them as well, using:
 
-   $ proxyreverse -s 8080,8443 my.dev
+    $ proxyreverse -s 8080,8443 my.dev
 
 If your domain's SSL certificate is invalid, connections to it will fail, invalid
 certificates can be ignored using the --insecure (or -k) option on the command line:
 
-   $ proxyreverse -sk 8080,8443 my.dev
+    $ proxyreverse -sk 8080,8443 my.dev
 
 
 [nodejs]: http://nodejs.org/download/
+[npm]:    https://www.npmjs.org/
 [github]: https://github.com/andytson/proxyremote.js
 
 
