@@ -5,13 +5,10 @@ var proxyReverse = require('../')
   , os = require('os')
   , pkg = require('../package.json')
   , version = pkg.version
-  , argumentParser = require('optimist')
-    .usage('Usage: proxyreverse [options] PORT BACKEND')
-    .boolean('help')
-    .options('h', {
-      alias: 'help',
-      description: 'Show this message'
-    })
+  , argumentParser = require('yargs')
+    .usage('Usage: $0 [options] PORT BACKEND')
+    .help('h')
+    .alias('h', 'help')
     .boolean('insecure')
     .options('k', {
       alias: 'insecure',
@@ -42,7 +39,7 @@ var proxyReverse = require('../')
     })
   , options = argumentParser.argv;
 
-if (options.help || options._.length < 2) {
+if (options._.length < 2) {
   argumentParser.showHelp();
   return;
 }

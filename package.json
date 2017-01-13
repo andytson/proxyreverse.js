@@ -13,7 +13,7 @@
   "license": "MIT",
 
   "dependencies": {
-    "optimist": "~ 0.3.5",
+    "yargs": "~ 6.6",
     "regexp-quote": "0.0.0",
     "spdy": "~ 1.19",
     "tough-cookie": "0.12.1"
