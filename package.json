@@ -15,7 +15,7 @@
   "dependencies": {
     "yargs": "~ 6.6",
     "regexp-quote": "0.0.0",
-    "spdy": "~ 1.19",
+    "spdy": "~ 3.4",
     "tough-cookie": "0.12.1"
   },
 

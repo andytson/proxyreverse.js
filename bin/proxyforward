@@ -14,11 +14,11 @@ var proxyReverse = require('../')
       alias: 'insecure',
       description: 'Allows insecure SSL connections to the backend, bypassing rejected SSL certificates'
     })
-    .boolean('spdy')
-    .options('spdy', {
-      alias: 'no-spdy',
+    .boolean('http2')
+    .options('http2', {
+      alias: 'no-http2',
       default: false,
-      description: 'Turns on/off SPDY support and uses https protocol for all https connections'
+      description: 'Turns on/off HTTP/2.0 and SPDY support and uses https protocol for all https connections'
     })
     .boolean('verbose')
     .options('v', {
@@ -49,10 +49,10 @@ options['mode'] = 'forward';
 proxy = new HttpProxy(options);
 
 require('../lib/middleware/http').createHttp(proxy, options);
-if (!options['spdy']) {
+if (!options['http2']) {
   require('../lib/middleware/https').createHttps(proxy, options);
 } else {
-  require('../lib/middleware/spdy').createSpdy(proxy, options);
+  require('../lib/middleware/http2').createHttp2(proxy, options);
 }
 
 require('../lib/middleware/header-url-rewrite')(proxy, options);
