@@ -17,7 +17,7 @@ var proxyReverse = require('../')
     .boolean('http2')
     .options('http2', {
       alias: 'no-http2',
-      default: false,
+      default: true,
       description: 'Turns on/off HTTP/2.0 and SPDY support and uses https protocol for all https connections'
     })
     .boolean('verbose')
