@@ -1,0 +1,8 @@
+version: '2'
+services:
+  proxyreverse:
+    build: .
+    entrypoint: [/app/bin/proxyreverse]
+  proxyforward:
+    build: .
+    entrypoint: [/app/bin/proxyforward]
