@@ -1,7 +1,7 @@
 {
   "name": "proxyreverse",
   "description": "Reverse proxy your local web-server",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Andy Thompson <me@andytson.com>",
   "keywords": ["proxy"],
   "repository": {
