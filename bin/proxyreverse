@@ -9,6 +9,11 @@ var proxyReverse = require('../')
     .usage('Usage: $0 [options] PORT BACKEND')
     .help('h')
     .alias('h', 'help')
+    .option('b', {
+      alias: 'bind-ip',
+      default: 'localhost',
+      description: 'Sets the ip for the proxy to bind to.'
+    })
     .boolean('insecure')
     .options('k', {
       alias: 'insecure',
@@ -49,7 +54,7 @@ if (options.version) {
   return;
 }
 
-options['frontend_host'] = os.hostname();
+options['frontend_host'] = options['bind-ip'];
 options['frontend_ports'] = options._[0].toString().split(',');
 options['backend_host'] = options._[1];
 options['mode'] = 'reverse';

@@ -32,6 +32,12 @@ interface with local access via http://my.dev/
 Now you can open this link in your favorite browser and request will
 be proxied to your my.dev serer.
 
+If you want to expose the local web-server to others on the LAN
+
+    $ proxyreverse -b 0.0.0.0 8080,8443 my.dev
+    http://my.dev is now available via: http://0.0.0.0:8080
+    https://my.dev is now available via: https://0.0.0.0:8443
+
 If your domain uses sub-domains for assets, proxyreverse can be told to rewrite
 them as well, using:
 
